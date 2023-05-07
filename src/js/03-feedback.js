@@ -7,38 +7,44 @@ const inputContainer = document.querySelector('input');
 const textAreaContainer = document.querySelector('textarea');
 
 formContainer.addEventListener('submit', onFormSubmit);
-formContainer.addEventListener('input', throttle(onInputDate, 500))
+formContainer.addEventListener('input', throttle(onInputDate, 500));
 
-const formData = {};
+
+let dateForm = localStorage.getItem(LOCAL_STORAGE_KEY);
+dateForm = dateForm ? JSON.parse(dateForm) : {};
 
 populateTextarea();
 
 function onInputDate(event){
+dateForm[event.target.name] = event.target.value;
+localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(dateForm));
+}
 
-formData[event.target.name] = event.target.value;
-   
-   const JSONstring = JSON.stringify(formData);
+function onFormSubmit(event){
+   event.preventDefault();
 
-   localStorage.setItem(LOCAL_STORAGE_KEY, JSONstring);
+   if(inputContainer.value === "" || textAreaContainer.value === ""){
+      return alert('Заповніть, будь ласка, усі поля форми!')
+   }
+
+   console.log(dateForm);
+   event.currentTarget.reset();
+   localStorage.removeItem(LOCAL_STORAGE_KEY);
+   dateForm = {};
+
 }
 
 function populateTextarea() {
-   const savedMessage = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
 
-   if (savedMessage) {
-      inputContainer.value = savedMessage.email;
-      textAreaContainer.value = savedMessage.message;
+   inputContainer.value = dateForm['email'] ? dateForm['email'] : "";
+   textAreaContainer.value = dateForm['message'] ? dateForm['message'] : "";
+
    }
+  
+  
+ 
 
- }
 
- function onFormSubmit(event){
-   event.preventDefault();
-
-   console.log(formData);
-event.currentTarget.reset();
-localStorage.removeItem(LOCAL_STORAGE_KEY);
-}
 
 
 
