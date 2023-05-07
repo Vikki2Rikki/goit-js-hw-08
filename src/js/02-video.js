@@ -7,20 +7,19 @@ const iframe = document.querySelector('iframe');
 const player = new Player(iframe);
 const timeLocalStorage = localStorage.getItem(LOCAL_STORAGE_KEY) || 0;
 
-player.on('timeupdate', throttle(onTimeUpDate, 1000));
-
 function onTimeUpDate({ seconds }) {
-   //console.log(seconds);
    localStorage.setItem(LOCAL_STORAGE_KEY, seconds);
 }
 
-player.setCurrentTime(timeLocalStorage).then(function(seconds) {
-   // seconds = the actual time that the player seeked to
+player.on('timeupdate', throttle(onTimeUpDate, 1000));
+
+
+player.setCurrentTime(timeLocalStorage).then(function(error) {
 }).catch(function(error) {
    switch (error.name) {
-       case 'RangeError':
-           break;
-       default:
-           break;
+      case 'RangeError':
+         break;
+      default:
+         break;
    }
 });
